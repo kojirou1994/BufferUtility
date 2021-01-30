@@ -14,4 +14,3 @@ if #available(macOS 11.0, *) {
 } else {
   fatalError()
 }
-

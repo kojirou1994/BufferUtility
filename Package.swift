@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
   name: "BufferUtility",
+  platforms: [
+    .macOS(.v10_13)
+  ],
   products: [
     .library(
       name: "BufferUtility",
@@ -23,6 +26,9 @@ let package = Package(
       dependencies: ["BufferUtility"]),
     .target(
       name: "SlowCopy",
+      dependencies: ["BufferUtility"]),
+    .target(
+      name: "FastCopy",
       dependencies: ["BufferUtility"]),
     .testTarget(
       name: "BufferUtilityTests",
