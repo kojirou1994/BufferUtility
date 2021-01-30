@@ -125,49 +125,52 @@ public func foundationEnumerateBuffer<C: Collection>(files: C, allowMultipleFile
       return
     }
 
-    let currentFileHandle = try FileHandle(forReadingFrom: readingFileURL)
+    try withAutoReleasePool {
+      let currentFileHandle = try FileHandle(forReadingFrom: readingFileURL)
 
-    readloop: while true {
-      let needBufferSize = bufferSizeLimit - buffer.count
+      readloop: while true {
+        let needBufferSize = bufferSizeLimit - buffer.count
+        if #available(macOS 10.15.4, *) {
+          if let newBuffer = try withAutoReleasePool({ try currentFileHandle.read(upToCount: needBufferSize) }) {
+            // has new buffer
+            buffer.append(newBuffer)
+          } else {
+            // no more data
+            break readloop
+          }
+        } else {
+          let newBuffer = withAutoReleasePool { currentFileHandle.readData(ofLength: needBufferSize) }
+          if newBuffer.isEmpty {
+            // no more data
+            break readloop
+          } else {
+            buffer.append(newBuffer)
+          }
+        }
+
+        if buffer.count == bufferSizeLimit {
+          try handleLoadedBuffer(fileIndex: fileIndex)
+          if stop {
+            break readloop
+          }
+        }
+
+      } // readloop end
+
+
       if #available(macOS 10.15.4, *) {
-        if let newBuffer = try currentFileHandle.read(upToCount: needBufferSize) {
-          // has new buffer
-          buffer.append(newBuffer)
-        } else {
-          // no more data
-          break readloop
-        }
+        try currentFileHandle.close()
       } else {
-        let newBuffer = currentFileHandle.readData(ofLength: needBufferSize)
-        if newBuffer.isEmpty {
-          // no more data
-          break readloop
-        } else {
-          buffer.append(newBuffer)
-        }
+        currentFileHandle.closeFile()
       }
 
-      if buffer.count == bufferSizeLimit {
+      if !allowMultipleFilesInOneBuffer, buffer.isEmpty {
         try handleLoadedBuffer(fileIndex: fileIndex)
-        if stop {
-          break readloop
-        }
       }
 
-    } // readloop end
+    } // end of autoreleasepool
 
-
-    if #available(macOS 10.15.4, *) {
-      try currentFileHandle.close()
-    } else {
-      currentFileHandle.closeFile()
-    }
-
-    if !allowMultipleFilesInOneBuffer, buffer.isEmpty {
-      try handleLoadedBuffer(fileIndex: fileIndex)
-    }
-
-  }
+  } // end of files loop
 
   // if has unhandled buffer
   if !buffer.isEmpty {
