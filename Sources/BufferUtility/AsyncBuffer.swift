@@ -24,6 +24,7 @@ class AsyncCachedBuffer<T> {
   func add(buffer: T) {
     condition.lock()
     defer {
+      debug("Leave \(#function)")
       condition.unlock()
     }
     debug("Add \(buffer)")
@@ -31,12 +32,14 @@ class AsyncCachedBuffer<T> {
       condition.wait()
     }
     buffers.append(buffer)
+    debug("Signal \(#function)")
     condition.signal()
   }
 
   var nextBuffer: T? {
     condition.lock()
     defer {
+      debug("Leave \(#function)")
       condition.unlock()
     }
     while buffers.isEmpty {
@@ -44,10 +47,11 @@ class AsyncCachedBuffer<T> {
         return nil
       } else {
         // not finished yet
-        condition.wait()
+        condition.wait()//until: Date(timeIntervalSinceNow: 0.1))
       }
     }
     defer {
+      debug("Signal \(#function)")
       condition.signal()
     }
     return buffers.removeFirst()

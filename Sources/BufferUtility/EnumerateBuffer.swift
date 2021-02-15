@@ -1,6 +1,6 @@
 import Foundation
 #if os(Linux)
-import SwiftSystem
+import SystemPackage
 #else
 import System
 #endif
