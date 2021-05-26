@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.4
 
 import PackageDescription
 
@@ -13,21 +13,21 @@ let package = Package(
       targets: ["BufferUtility"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-system", from: "0.0.1"),
+    .package(url: "https://github.com/apple/swift-system.git", from: "0.0.1"),
   ],
   targets: [
     .target(
       name: "BufferUtility",
       dependencies: [
-        ._productItem(name: "SystemPackage", package: "swift-system", condition: .when(platforms: [.linux]))
+        .product(name: "SystemPackage", package: "swift-system", condition: .when(platforms: [.linux]))
       ]),
-    .target(
+    .executableTarget(
       name: "BufferUtilityExample",
       dependencies: ["BufferUtility"]),
-    .target(
+    .executableTarget(
       name: "SlowCopy",
       dependencies: ["BufferUtility"]),
-    .target(
+    .executableTarget(
       name: "FastCopy",
       dependencies: ["BufferUtility"]),
     .testTarget(

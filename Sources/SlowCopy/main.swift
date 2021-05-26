@@ -12,7 +12,7 @@ precondition(FileManager.default.createFile(atPath: outputURL.path, contents: ni
 
 let outputFileHandle = try FileHandle.init(forWritingTo: outputURL)
 
-try enumerateBuffer(file: input, bufferSizeLimit: 4 * 1024) { (buffer, _, _) in
+try BufferEnumerator(options: .init(bufferSizeLimit: 4*1024)).enumerateBuffer(file: input) { (buffer, _, _) in
   if #available(macOS 10.15.4, *) {
     try outputFileHandle.write(contentsOf: buffer)
   } else {
