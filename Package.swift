@@ -19,7 +19,7 @@ let package = Package(
     .target(
       name: "BufferUtility",
       dependencies: [
-        .product(name: "SystemPackage", package: "swift-system", condition: .when(platforms: [.linux]))
+        .product(name: "SystemPackage", package: "swift-system"),
       ]),
     .executableTarget(
       name: "BufferUtilityExample",
