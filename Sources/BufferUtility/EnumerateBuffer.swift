@@ -1,9 +1,5 @@
 import Foundation
-#if os(Linux)
 import SystemPackage
-#else
-import System
-#endif
 
 public struct BufferEnumerator {
   public init(options: Options) {
@@ -36,7 +32,6 @@ public extension BufferEnumerator {
   }
 
   // MARK: System Framework
-  @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
   func systemEnumerateBuffer<C: Collection>(files: C, handler: BufferHandler<UnsafeRawBufferPointer>) throws where C.Element == FilePath {
 
     precondition(options.bufferSizeLimit > 0)
@@ -174,29 +169,13 @@ public extension BufferEnumerator {
   // MARK: URL inputs
   @inlinable
   func enumerateBuffer<C: Collection>(files: C, handler: BufferHandler<UnsafeRawBufferPointer>) throws where C.Element == URL {
-    if #available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *) {
-      try systemEnumerateBuffer(files: files.lazy.map { FilePath($0.path) }, handler: handler)
-    } else {
-      try foundationEnumerateBuffer(files: files) { data, fileIndex, stop in
-        try data.withUnsafeBytes { buffer in
-          try handler(buffer, fileIndex, &stop)
-        }
-      }
-    }
+    try systemEnumerateBuffer(files: files.lazy.map { FilePath($0.path) }, handler: handler)
   }
 
   // MARK: String inputs
   @inlinable
   func enumerateBuffer<C: Collection>(files: C, handler: BufferHandler<UnsafeRawBufferPointer>) throws where C.Element == String {
-    if #available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *) {
-      try systemEnumerateBuffer(files: files.lazy.map { FilePath($0) }, handler: handler)
-    } else {
-      try foundationEnumerateBuffer(files: files.lazy.map { URL(fileURLWithPath: $0) }) { data, fileIndex, stop in
-        try data.withUnsafeBytes { buffer in
-          try handler(buffer, fileIndex, &stop)
-        }
-      }
-    }
+    try systemEnumerateBuffer(files: files.lazy.map { FilePath($0) }, handler: handler)
   }
 }
 
@@ -213,7 +192,6 @@ public extension BufferEnumerator {
   }
 
   @inlinable
-  @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
   func systemEnumerateBuffer(file: FilePath, handler: BufferHandler<UnsafeRawBufferPointer>) throws {
     try systemEnumerateBuffer(files: CollectionOfOne(file), handler: handler)
   }
