@@ -1,5 +1,5 @@
 import Foundation
-
+import DequeModule
 //protocol AsyncBufferItem: AnyObject {
 //  associatedtype Buffer
 //
@@ -12,7 +12,7 @@ class AsyncCachedBuffer<T> {
   let condition: NSCondition  = .init()
   private var finished: Bool = false
 
-  private var buffers: ContiguousArray<T>
+  private var buffers: Deque<T>
 
   private let maximumBufferCount = 10
 

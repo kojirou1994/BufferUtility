@@ -14,12 +14,14 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-system.git", from: "0.0.1"),
+    .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.1"),
   ],
   targets: [
     .target(
       name: "BufferUtility",
       dependencies: [
         .product(name: "SystemPackage", package: "swift-system"),
+        .product(name: "DequeModule", package: "swift-collections"),
       ]),
     .executableTarget(
       name: "BufferUtilityExample",
