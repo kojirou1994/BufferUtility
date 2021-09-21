@@ -8,13 +8,11 @@ let package = Package(
     .macOS(.v10_13)
   ],
   products: [
-    .library(
-      name: "BufferUtility",
-      targets: ["BufferUtility"]),
+    .library(name: "BufferUtility", targets: ["BufferUtility"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-system.git", from: "0.0.1"),
-    .package(url: "https://github.com/apple/swift-collections.git", from: "0.0.1"),
+    .package(url: "https://github.com/apple/swift-system.git", from: "1.0.0"),
+    .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
   ],
   targets: [
     .target(
