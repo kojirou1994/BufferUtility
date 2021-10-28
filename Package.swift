@@ -21,15 +21,6 @@ let package = Package(
         .product(name: "SystemPackage", package: "swift-system"),
         .product(name: "DequeModule", package: "swift-collections"),
       ]),
-    .executableTarget(
-      name: "BufferUtilityExample",
-      dependencies: ["BufferUtility"]),
-    .executableTarget(
-      name: "SlowCopy",
-      dependencies: ["BufferUtility"]),
-    .executableTarget(
-      name: "FastCopy",
-      dependencies: ["BufferUtility"]),
     .testTarget(
       name: "BufferUtilityTests",
       dependencies: ["BufferUtility"]),
