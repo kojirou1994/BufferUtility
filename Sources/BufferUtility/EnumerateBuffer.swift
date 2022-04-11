@@ -27,7 +27,9 @@ public extension BufferEnumerator {
 
   private func setup(fd: CInt) throws {
     if options.disableCache {
-      assert(fcntl(fd, F_NOCACHE, 1) == 0)
+      #if canImport(Darwin)
+      precondition(fcntl(fd, F_NOCACHE, 1) == 0)
+      #endif
     }
   }
 
