@@ -8,10 +8,11 @@ import DequeModule
 //  func overwrite(buffer: Buffer)
 //}
 
-class AsyncCachedBuffer<T> {
+final class AsyncCachedBuffer<T>: Sendable {
   let condition: NSCondition  = .init()
+  nonisolated(unsafe)
   private var finished: Bool = false
-
+  nonisolated(unsafe)
   private var buffers: Deque<T>
 
   private let maximumBufferCount = 10
@@ -65,7 +66,7 @@ class AsyncCachedBuffer<T> {
   }
 }
 
-public func asyncCachedEnumerate<T>(input: @escaping () -> T?, output: (T) throws -> Void) rethrows {
+public func asyncCachedEnumerate<T>(input: @escaping @Sendable () -> T?, output: (T) throws -> Void) rethrows {
   let queue = AsyncCachedBuffer<T>()
   Thread {
     while let nextInput = input() {

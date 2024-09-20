@@ -3,7 +3,7 @@ import BufferUtility
 
 final class BufferUtilityTests: XCTestCase {
   func testAsyncBuffer() throws {
-    var number = 0
+    nonisolated(unsafe) var number = 0
     let numberLimit = 100
     var numbers = [Int]()
     asyncCachedEnumerate { () -> Int? in
