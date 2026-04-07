@@ -1,11 +1,11 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.3
 
 import PackageDescription
 
 let package = Package(
   name: "BufferUtility",
   platforms: [
-    .macOS(.v10_15)
+    .macOS(.v11),
   ],
   products: [
     .library(name: "BufferUtility", targets: ["BufferUtility"]),
